@@ -1,8 +1,13 @@
 /.idea/
+/Robot.Cli.Tests/bin/
+/Robot.Cli.Tests/obj/
 /Robot.Cli/bin/
 /Robot.Cli/obj/
+/Robot.Core.Tests/bin/
+/Robot.Core.Tests/obj/
 /Robot.Core/bin/
 /Robot.Core/obj/
 /Robot.Web/Robot.Web.csproj.DotSettings.user
 /Robot.Web/bin/
 /Robot.Web/obj/
+/ToyRobot.sln.DotSettings.user

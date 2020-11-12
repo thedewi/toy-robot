@@ -1,0 +1,113 @@
+﻿@using Robot.Core
+@inject Robot Robot
+<style>
+    .table {
+        position: relative; /* to contain absolute .robot */
+        box-sizing: content-box;
+        width: @(TableSideLength)em;
+        height: @(TableSideLength)em;
+        border-style: solid none none solid;
+        border-color: #888;
+        font-size: @(ZoomPc)%;
+    }
+    .grid-cell {
+        height: 1em;
+        width: 1em;
+        border-style: none solid solid none;
+        border-color: #888;
+        float: left;
+    }
+    .robot {
+        position: absolute;
+        line-height: 1em;
+        width: 1em;
+        text-align: center;
+        transform-origin: 50% 60%;
+        transition-property: left, bottom, transform;
+        transition-timing-function: ease-in-out;
+        transition-duration: @(AnimSecs)s;
+    }
+    .robot span {
+        font-size: 115%;
+        color: purple;
+    }
+    .controls form {
+        border: solid #888;
+        margin: 1em 0;
+        padding: 0.5em;
+        float: left;
+        clear: left;
+    }
+    .controls form input {
+        width: 3em;
+    }
+    .controls form select {
+        height: 1.8em;
+    }
+    .controls form label {
+        margin-bottom: 0;
+    }
+</style>
+
+<div class="table">
+    @foreach (var _ in Enumerable.Range(0, TableSideLength * TableSideLength))
+    {
+        <div class="grid-cell"></div>
+    }
+    <div class="robot" style="
+        display: @(_onTable ? "inherit" : "none");
+        left: @(_posX)em;
+        bottom: calc(@(_posY)em + 4px);
+        transform: rotate(@(DirectionDegrees)deg);
+    ">
+        <span>&spades;</span>
+    </div>
+</div>
+
+<div class="controls">
+    <EditForm Model="@_placeCommand" OnValidSubmit="@Place">
+        <header>Placement</header>
+        <label>
+            X <InputNumber @bind-Value="_placeCommand.PosX" min="0" max="@(TableSideLength - 1)"/>
+        </label>
+        <label>
+            Y <InputNumber @bind-Value="_placeCommand.PosY" min="0" max="@(TableSideLength - 1)"/>
+        </label>
+        <InputSelect @bind-Value="_placeCommand.Direction">
+            @foreach (var dir in Enum.GetNames(typeof(Direction)))
+            {
+                <option>@dir</option>
+            }
+        </InputSelect>
+        <button type="submit">Place</button>
+    </EditForm>
+</div>
+
+@code {
+    private static readonly int ZoomPc = 300;
+    private static readonly decimal AnimSecs = 0.5m;
+
+    private bool _onTable;
+    private int _posX;
+    private int _posY;
+    private Direction _direction;
+
+    private int TableSideLength => Robot.TableSideLength;
+    private int DirectionDegrees => (int) _direction * 90;
+
+    private PlaceCommand _placeCommand = new PlaceCommand();
+
+    private void Place()
+    {
+        Robot.Place(_placeCommand.PosX, _placeCommand.PosY, _placeCommand.Direction);
+        (_onTable, _posX, _posY, _direction) = Robot.Report();
+    }
+
+    private class PlaceCommand
+    {
+        public int PosX { get; set; }
+        public int PosY { get; set; }
+        public Direction Direction { get; set; }
+    }
+
+}

@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Robot.Web.Data;
 
 namespace Robot.Web
 {
@@ -14,7 +13,7 @@ namespace Robot.Web
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
+            services.AddTransient(sp => new Core.Robot(5));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

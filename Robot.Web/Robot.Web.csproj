@@ -5,4 +5,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Robot.Core\Robot.Core.csproj" />
+    </ItemGroup>
+
 </Project>
