@@ -32,5 +32,11 @@
 </div>
 
 <script src="_framework/blazor.server.js"></script>
+<environment include="Development">
+    <!--suppress JSUnresolvedVariable -->
+    <script>
+        Blazor.defaultReconnectionHandler.onConnectionDown = () => window.location.reload();
+    </script>
+</environment>
 </body>
 </html>
