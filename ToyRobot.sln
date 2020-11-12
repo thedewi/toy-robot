@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Robot.Cli", "Robot.Cli\Robo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Robot.Core", "Robot.Core\Robot.Core.csproj", "{13071135-A085-47D1-89D3-1BA304A05F40}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Robot.Web", "Robot.Web\Robot.Web.csproj", "{55CFEC6F-9478-4A65-AB49-16B1EA6114E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{13071135-A085-47D1-89D3-1BA304A05F40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13071135-A085-47D1-89D3-1BA304A05F40}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13071135-A085-47D1-89D3-1BA304A05F40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55CFEC6F-9478-4A65-AB49-16B1EA6114E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55CFEC6F-9478-4A65-AB49-16B1EA6114E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55CFEC6F-9478-4A65-AB49-16B1EA6114E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55CFEC6F-9478-4A65-AB49-16B1EA6114E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
