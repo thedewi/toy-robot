@@ -3,5 +3,6 @@
 /Robot.Cli/obj/
 /Robot.Core/bin/
 /Robot.Core/obj/
+/Robot.Web/Robot.Web.csproj.DotSettings.user
 /Robot.Web/bin/
 /Robot.Web/obj/
