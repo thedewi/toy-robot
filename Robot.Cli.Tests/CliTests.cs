@@ -19,8 +19,19 @@ namespace Robot.Cli.Tests
         {
             AssertCommandOutputs(
                 ("REPORT", ""),
+                ("MOVE", ""),
+                ("REPORT", ""),
                 ("PLACE 1,2,EAST", ""),
                 ("REPORT", "1,2,EAST"));
+        }
+
+        [Fact]
+        public void CanMove()
+        {
+            AssertCommandOutputs(
+                ("PLACE 0,0,NORTH", ""),
+                ("MOVE", ""),
+                ("REPORT", "0,1,NORTH"));
         }
 
         private void AssertCommandOutputs(params (string command, string expectedOutput)[] assertions)

@@ -57,6 +57,29 @@ namespace Robot.Core
             return validity;
         }
 
+        public bool Move()
+        {
+            if (!_onTable)
+                throw new NotOnTableException();
+            switch (_direction)
+            {
+                case Direction.North when _posY + 1 < TableSideLength:
+                    _posY++;
+                    return true;
+                case Direction.East when _posX + 1 < TableSideLength:
+                    _posX++;
+                    return true;
+                case Direction.South when _posY - 1 >= 0:
+                    _posY--;
+                    return true;
+                case Direction.West when _posX - 1 >= 0:
+                    _posX--;
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         public (bool onTable, int posX, int posY, Direction direction) Report()
         {
             return (_onTable, _posX, _posY, _direction);

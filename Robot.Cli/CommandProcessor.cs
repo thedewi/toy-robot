@@ -23,18 +23,29 @@ namespace Robot.Cli
         public string Process(string commandLine)
         {
             var commandTokens = SplitPattern.Split(commandLine);
-            switch (commandTokens[0].ToUpperInvariant())
+            try
             {
-                case "PLACE":
-                    PlaceCommand(commandTokens);
-                    return "";
-                case "REPORT":
-                    var (onTable, posX, posY, direction) = _robot.Report();
-                    return onTable
-                        ? $"{posX},{posY},{direction.ToString().ToUpperInvariant()}"
-                        : "";
-                default:
-                    throw new CommandException("Unrecognized command.", true);
+                switch (commandTokens[0].ToUpperInvariant())
+                {
+                    case "PLACE":
+                        PlaceCommand(commandTokens);
+                        return "";
+                    case "MOVE":
+                        return _robot.Move()
+                            ? ""
+                            : throw new CommandException("Unable to move due to table edge.", false);
+                    case "REPORT":
+                        var (onTable, posX, posY, direction) = _robot.Report();
+                        return onTable
+                            ? $"{posX},{posY},{direction.ToString().ToUpperInvariant()}"
+                            : "";
+                    default:
+                        throw new CommandException("Unrecognized command.", true);
+                }
+            }
+            catch (NotOnTableException ex)
+            {
+                throw new CommandException(ex.Message, false);
             }
         }
 

@@ -36,7 +36,6 @@
         margin: 1em 0;
         padding: 0.5em;
         float: left;
-        clear: left;
     }
     .controls form input {
         width: 3em;
@@ -81,6 +80,10 @@
         </InputSelect>
         <button type="submit">Place</button>
     </EditForm>
+    <form>
+        <header>Movement</header>
+        <button type="button" @onclick="Move">Move</button>
+    </form>
 </div>
 
 @code {
@@ -100,6 +103,17 @@
     private void Place()
     {
         Robot.Place(_placeCommand.PosX, _placeCommand.PosY, _placeCommand.Direction);
+        Report();
+    }
+
+    private void Move()
+    {
+        Robot.Move();
+        Report();
+    }
+
+    private void Report()
+    {
         (_onTable, _posX, _posY, _direction) = Robot.Report();
     }
 
