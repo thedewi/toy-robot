@@ -34,6 +34,12 @@ namespace Robot.Cli
                         return _robot.Move()
                             ? ""
                             : throw new CommandException("Unable to move due to table edge.", false);
+                    case "LEFT":
+                        _robot.Left();
+                        return "";
+                    case "RIGHT":
+                        _robot.Right();
+                        return "";
                     case "REPORT":
                         var (onTable, posX, posY, direction) = _robot.Report();
                         return onTable

@@ -83,6 +83,8 @@
     <form>
         <header>Movement</header>
         <button type="button" @onclick="Move">Move</button>
+        <button type="button" @onclick="Left">Left</button>
+        <button type="button" @onclick="Right">Right</button>
     </form>
 </div>
 
@@ -109,6 +111,18 @@
     private void Move()
     {
         Robot.Move();
+        Report();
+    }
+
+    private void Left()
+    {
+        Robot.Left();
+        Report();
+    }
+
+    private void Right()
+    {
+        Robot.Right();
         Report();
     }
 

@@ -43,6 +43,10 @@ namespace Robot.Core.Tests
             Assert.False(_robot.Report().onTable);
             Assert.Throws<NotOnTableException>(() => _robot.Move());
             Assert.False(_robot.Report().onTable);
+            Assert.Throws<NotOnTableException>(() => _robot.Left());
+            Assert.False(_robot.Report().onTable);
+            Assert.Throws<NotOnTableException>(() => _robot.Right());
+            Assert.False(_robot.Report().onTable);
             Assert.Equal(PlacementValidity.Valid, _robot.Place(1, 2, Direction.East));
             Assert.Equal((true, 1, 2, Direction.East), _robot.Report());
         }
@@ -70,6 +74,26 @@ namespace Robot.Core.Tests
             Assert.Equal(PlacementValidity.Valid, _robot.Place(4, 4, Direction.East));
             Assert.False(_robot.Move());
             Assert.Equal((true, 4, 4, Direction.East), _robot.Report());
+        }
+
+        [Fact]
+        public void CanTurnLeft()
+        {
+            Assert.Equal(PlacementValidity.Valid, _robot.Place(0, 0, Direction.East));
+            _robot.Left();
+            Assert.Equal((true, 0, 0, Direction.North), _robot.Report());
+            _robot.Left();
+            Assert.Equal((true, 0, 0, Direction.West), _robot.Report());
+        }
+
+        [Fact]
+        public void CanTurnRight()
+        {
+            Assert.Equal(PlacementValidity.Valid, _robot.Place(0, 0, Direction.West));
+            _robot.Right();
+            Assert.Equal((true, 0, 0, Direction.North), _robot.Report());
+            _robot.Right();
+            Assert.Equal((true, 0, 0, Direction.East), _robot.Report());
         }
     }
 }

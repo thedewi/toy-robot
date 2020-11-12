@@ -80,6 +80,24 @@ namespace Robot.Core
             }
         }
 
+        public void Left()
+        {
+            if (!_onTable)
+                throw new NotOnTableException();
+            _direction = _direction == Direction.North
+                ? Direction.West
+                : _direction - 1;
+        }
+
+        public void Right()
+        {
+            if (!_onTable)
+                throw new NotOnTableException();
+            _direction = _direction == Direction.West
+                ? Direction.North
+                : _direction + 1;
+        }
+
         public (bool onTable, int posX, int posY, Direction direction) Report()
         {
             return (_onTable, _posX, _posY, _direction);

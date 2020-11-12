@@ -21,6 +21,10 @@ namespace Robot.Cli.Tests
                 ("REPORT", ""),
                 ("MOVE", ""),
                 ("REPORT", ""),
+                ("LEFT", ""),
+                ("REPORT", ""),
+                ("RIGHT", ""),
+                ("REPORT", ""),
                 ("PLACE 1,2,EAST", ""),
                 ("REPORT", "1,2,EAST"));
         }
@@ -32,6 +36,36 @@ namespace Robot.Cli.Tests
                 ("PLACE 0,0,NORTH", ""),
                 ("MOVE", ""),
                 ("REPORT", "0,1,NORTH"));
+        }
+
+        [Fact]
+        public void CanTurnLeft()
+        {
+            AssertCommandOutputs(
+                ("PLACE 0,0,NORTH", ""),
+                ("LEFT", ""),
+                ("REPORT", "0,0,WEST"));
+        }
+
+        [Fact]
+        public void CanTurnRight()
+        {
+            AssertCommandOutputs(
+                ("PLACE 1,2,SOUTH", ""),
+                ("RIGHT", ""),
+                ("REPORT", "1,2,WEST"));
+        }
+
+        [Fact]
+        public void InterpretsSequence()
+        {
+            AssertCommandOutputs(
+                ("PLACE 1,2,EAST", ""),
+                ("MOVE", ""),
+                ("MOVE", ""),
+                ("LEFT", ""),
+                ("MOVE", ""),
+                ("REPORT", "3,3,NORTH"));
         }
 
         private void AssertCommandOutputs(params (string command, string expectedOutput)[] assertions)
