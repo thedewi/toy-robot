@@ -95,10 +95,10 @@
     private bool _onTable;
     private int _posX;
     private int _posY;
-    private Direction _direction;
+    private int _direction;
 
     private int TableSideLength => Robot.TableSideLength;
-    private int DirectionDegrees => (int) _direction * 90;
+    private int DirectionDegrees => _direction * 90;
 
     private PlaceCommand _placeCommand = new PlaceCommand();
 
@@ -128,7 +128,15 @@
 
     private void Report()
     {
-        (_onTable, _posX, _posY, _direction) = Robot.Report();
+        Direction newDir;
+        (_onTable, _posX, _posY, newDir) = Robot.Report();
+        var delta = (int) newDir - _direction % 4;
+        _direction
+            += delta > 2
+                ? delta - 4
+                : delta < -2
+                    ? delta + 4
+                    : delta;
     }
 
     private class PlaceCommand
