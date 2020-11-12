@@ -15,11 +15,11 @@ namespace Robot.Web.Data
         {
             var rng = new Random();
             return Task.FromResult(Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = startDate.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            }).ToArray());
+            (
+                startDate.AddDays(index),
+                rng.Next(-20, 55),
+                Summaries[rng.Next(Summaries.Length)]
+            )).ToArray());
         }
     }
 }
