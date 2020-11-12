@@ -1,4 +1,7 @@
-﻿namespace Robot.Core
+﻿using System;
+using System.Linq;
+
+namespace Robot.Core
 {
     public enum Direction
     {
@@ -6,6 +9,14 @@
         East = 1,
         South = 2,
         West = 3
+    }
+
+    public enum PlacementValidity
+    {
+        Valid,
+        PosXOutOfRange,
+        PosYOutOfRange,
+        InvalidDirection
     }
 
     public class Robot
@@ -22,12 +33,28 @@
 
         public int TableSideLength { get; }
 
-        public void Place(int posX, int posY, Direction direction)
+        private PlacementValidity Validate(int posX, int posY, Direction direction)
         {
+            return posX < 0 || posX >= TableSideLength
+                ? PlacementValidity.PosXOutOfRange
+                : posY < 0 || posY >= TableSideLength
+                    ? PlacementValidity.PosYOutOfRange
+                    : !Enum.GetValues(typeof(Direction)).Cast<Direction>().Contains(direction)
+                        ? PlacementValidity.InvalidDirection
+                        : PlacementValidity.Valid;
+        }
+
+        public PlacementValidity Place(int posX, int posY, Direction direction)
+        {
+            var validity = Validate(posX, posY, direction);
+            if (validity != PlacementValidity.Valid)
+                return validity;
+
             _onTable = true;
             _posX = posX;
             _posY = posY;
             _direction = direction;
+            return validity;
         }
 
         public (bool onTable, int posX, int posY, Direction direction) Report()

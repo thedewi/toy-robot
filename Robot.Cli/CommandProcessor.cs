@@ -42,24 +42,19 @@ namespace Robot.Cli
         {
             if (commandTokens.Count == 4
                 && int.TryParse(commandTokens[1], out var x)
-                && x >= 0 && x < _robot.TableSideLength
                 && int.TryParse(commandTokens[2], out var y)
-                && y >= 0 && y < _robot.TableSideLength
-                && Enum.TryParse<Direction>(commandTokens[3], true, out var direction))
-            {
-                _robot.Place(x, y, direction);
-            }
-            else
-            {
-                var maxDim = _robot.TableSideLength - 1;
-                var dirOpts = string.Join("/",
-                    Enum.GetValues(typeof(Direction)).Cast<Direction>());
-                throw new CommandException(
-                    "Unrecognized PLACE arguments."
-                    + Environment.NewLine
-                    + $"Usage:  PLACE X,Y,F  where X,Y are integers 0..{maxDim} and F is {dirOpts}.",
-                    false);
-            }
+                && Enum.TryParse<Direction>(commandTokens[3], true, out var direction)
+                && _robot.Place(x, y, direction) == PlacementValidity.Valid)
+                return;
+
+            var maxDim = _robot.TableSideLength - 1;
+            var dirOpts = string.Join("/",
+                Enum.GetValues(typeof(Direction)).Cast<Direction>());
+            throw new CommandException(
+                "Unrecognized PLACE arguments."
+                + Environment.NewLine
+                + $"Usage:  PLACE X,Y,F  where X,Y are integers 0..{maxDim} and F is {dirOpts}.",
+                false);
         }
     }
 }

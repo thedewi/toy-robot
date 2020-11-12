@@ -1,4 +1,6 @@
-﻿using Xunit;
+﻿using System;
+using System.Linq;
+using Xunit;
 
 namespace Robot.Core.Tests
 {
@@ -9,7 +11,37 @@ namespace Robot.Core.Tests
         [Fact]
         public void CanPlace()
         {
-            _robot.Place(1, 2, Direction.East);
+            Assert.Equal(PlacementValidity.Valid, _robot.Place(1, 2, Direction.East));
+            Assert.Equal((true, 1, 2, Direction.East), _robot.Report());
+        }
+
+        [Fact]
+        public void CanPlaceTwice()
+        {
+            CanPlace();
+            Assert.Equal(PlacementValidity.Valid, _robot.Place(3, 4, Direction.South));
+            Assert.Equal((true, 3, 4, Direction.South), _robot.Report());
+        }
+
+        [Fact]
+        public void InvalidPlaceIsIgnored()
+        {
+            Assert.Equal(PlacementValidity.PosXOutOfRange, _robot.Place(5, 2, Direction.East));
+            Assert.False(_robot.Report().onTable);
+            Assert.Equal(PlacementValidity.PosYOutOfRange, _robot.Place(1, 5, Direction.East));
+            Assert.False(_robot.Report().onTable);
+            Assert.Equal(PlacementValidity.InvalidDirection,
+                _robot.Place(1, 2, (Direction) (Enum.GetValues(typeof(Direction)).Cast<int>().Max() + 1)));
+            Assert.False(_robot.Report().onTable);
+            Assert.Equal(PlacementValidity.Valid, _robot.Place(1, 2, Direction.East));
+            Assert.Equal((true, 1, 2, Direction.East), _robot.Report());
+        }
+
+        [Fact]
+        public void CommandsIgnoredUntilPlace()
+        {
+            Assert.False(_robot.Report().onTable);
+            Assert.Equal(PlacementValidity.Valid, _robot.Place(1, 2, Direction.East));
             Assert.Equal((true, 1, 2, Direction.East), _robot.Report());
         }
     }
