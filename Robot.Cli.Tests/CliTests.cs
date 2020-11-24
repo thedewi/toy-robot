@@ -68,6 +68,28 @@ namespace Robot.Cli.Tests
                 ("REPORT", "3,3,NORTH"));
         }
 
+        [Fact]
+        public void CannotMoveIntoBlockedSquare()
+        {
+            AssertCommandOutputs(
+                ("PLACE 1,2,EAST", ""),
+                ("BLOCK 3,2", ""),
+                ("MOVE", ""),
+                ("MOVE", ""),
+                ("REPORT", "2,2,EAST")
+            );
+        }
+
+        [Fact]
+        public void CannotPlaceIntoBlockedSquare()
+        {
+            AssertCommandOutputs(
+                ("PLACE 1,2,EAST", ""),
+                ("BLOCK 3,2", ""),
+                ("PLACE 3,2,WEST", ""),
+                ("REPORT", "1,2,EAST"));
+        }
+
         private void AssertCommandOutputs(params (string command, string expectedOutput)[] assertions)
         {
             foreach (var (command, expectedOutput) in assertions)

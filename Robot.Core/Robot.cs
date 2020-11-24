@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Robot.Core
@@ -16,7 +17,8 @@ namespace Robot.Core
         Valid,
         PosXOutOfRange,
         PosYOutOfRange,
-        InvalidDirection
+        InvalidDirection,
+        Blocked
     }
 
     public class Robot
@@ -25,6 +27,7 @@ namespace Robot.Core
         private bool _onTable;
         private int _posX;
         private int _posY;
+        private readonly List<(int posX, int posY)> _blockedPositions = new List<(int posX, int posY)>();
 
         public Robot(int tableSideLength)
         {
@@ -33,15 +36,25 @@ namespace Robot.Core
 
         public int TableSideLength { get; }
 
-        private PlacementValidity Validate(int posX, int posY, Direction direction)
+        private PlacementValidity ValidatePositionOnTable(int posX, int posY)
         {
             return posX < 0 || posX >= TableSideLength
                 ? PlacementValidity.PosXOutOfRange
                 : posY < 0 || posY >= TableSideLength
                     ? PlacementValidity.PosYOutOfRange
-                    : !Enum.GetValues(typeof(Direction)).Cast<Direction>().Contains(direction)
-                        ? PlacementValidity.InvalidDirection
-                        : PlacementValidity.Valid;
+                    : PlacementValidity.Valid;
+        }
+
+        private PlacementValidity Validate(int posX, int posY, Direction direction)
+        {
+            var positionValidity = ValidatePositionOnTable(posX, posY);
+            return positionValidity == PlacementValidity.Valid
+                ? !Enum.GetValues(typeof(Direction)).Cast<Direction>().Contains(direction)
+                    ? PlacementValidity.InvalidDirection
+                    : _blockedPositions.Contains((posX, posY))
+                        ? PlacementValidity.Blocked
+                        : PlacementValidity.Valid
+                : positionValidity;
         }
 
         public PlacementValidity Place(int posX, int posY, Direction direction)
@@ -57,26 +70,34 @@ namespace Robot.Core
             return validity;
         }
 
-        public bool Move()
+        public PlacementValidity Move()
         {
             if (!_onTable)
                 throw new NotOnTableException();
             switch (_direction)
             {
-                case Direction.North when _posY + 1 < TableSideLength:
-                    _posY++;
-                    return true;
-                case Direction.East when _posX + 1 < TableSideLength:
-                    _posX++;
-                    return true;
-                case Direction.South when _posY - 1 >= 0:
-                    _posY--;
-                    return true;
-                case Direction.West when _posX - 1 >= 0:
-                    _posX--;
-                    return true;
+                case Direction.North:
+                    var northValidity = Validate(_posX, _posY + 1, _direction);
+                    if (northValidity == PlacementValidity.Valid)
+                        _posY++;
+                    return northValidity;
+                case Direction.East:
+                    var eastValidity = Validate(_posX + 1, _posY, _direction);
+                    if (eastValidity == PlacementValidity.Valid)
+                        _posX++;
+                    return eastValidity;
+                case Direction.South:
+                    var southValidity = Validate(_posX, _posY - 1, _direction);
+                    if (southValidity == PlacementValidity.Valid)
+                        _posY--;
+                    return southValidity;
+                case Direction.West:
+                    var westValidity = Validate(_posX - 1, _posY, _direction);
+                    if (westValidity == PlacementValidity.Valid)
+                        _posX--;
+                    return westValidity;
                 default:
-                    return false;
+                    return PlacementValidity.InvalidDirection;
             }
         }
 
@@ -96,6 +117,15 @@ namespace Robot.Core
             _direction = _direction == Direction.West
                 ? Direction.North
                 : _direction + 1;
+        }
+
+        public PlacementValidity Block(int posX, int posY)
+        {
+            var positionValidity = ValidatePositionOnTable(posX, posY);
+            if (positionValidity != PlacementValidity.Valid)
+                return positionValidity;
+            _blockedPositions.Add((posX, posY));
+            return PlacementValidity.Valid;
         }
 
         public (bool onTable, int posX, int posY, Direction direction) Report()

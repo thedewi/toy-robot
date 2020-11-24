@@ -55,7 +55,7 @@ namespace Robot.Core.Tests
         public void CanMove()
         {
             Assert.Equal(PlacementValidity.Valid, _robot.Place(1, 2, Direction.East));
-            Assert.True(_robot.Move());
+            Assert.Equal(PlacementValidity.Valid, _robot.Move());
             Assert.Equal((true, 2, 2, Direction.East), _robot.Report());
         }
 
@@ -63,16 +63,16 @@ namespace Robot.Core.Tests
         public void AvoidsFallingOffTable()
         {
             Assert.Equal(PlacementValidity.Valid, _robot.Place(0, 0, Direction.West));
-            Assert.False(_robot.Move());
+            Assert.Equal(PlacementValidity.PosXOutOfRange, _robot.Move());
             Assert.Equal((true, 0, 0, Direction.West), _robot.Report());
             Assert.Equal(PlacementValidity.Valid, _robot.Place(0, 0, Direction.South));
-            Assert.False(_robot.Move());
+            Assert.Equal(PlacementValidity.PosYOutOfRange, _robot.Move());
             Assert.Equal((true, 0, 0, Direction.South), _robot.Report());
             Assert.Equal(PlacementValidity.Valid, _robot.Place(4, 4, Direction.North));
-            Assert.False(_robot.Move());
+            Assert.Equal(PlacementValidity.PosYOutOfRange, _robot.Move());
             Assert.Equal((true, 4, 4, Direction.North), _robot.Report());
             Assert.Equal(PlacementValidity.Valid, _robot.Place(4, 4, Direction.East));
-            Assert.False(_robot.Move());
+            Assert.Equal(PlacementValidity.PosXOutOfRange, _robot.Move());
             Assert.Equal((true, 4, 4, Direction.East), _robot.Report());
         }
 
@@ -94,6 +94,25 @@ namespace Robot.Core.Tests
             Assert.Equal((true, 0, 0, Direction.North), _robot.Report());
             _robot.Right();
             Assert.Equal((true, 0, 0, Direction.East), _robot.Report());
+        }
+
+        [Fact]
+        public void CannotMoveIntoBlockedSquare()
+        {
+            Assert.Equal(PlacementValidity.Valid, _robot.Place(1, 2, Direction.East));
+            Assert.Equal(PlacementValidity.Valid, _robot.Block(3, 2));
+            Assert.Equal(PlacementValidity.Valid, _robot.Move());
+            Assert.Equal(PlacementValidity.Blocked, _robot.Move());
+            Assert.Equal((true, 2, 2, Direction.East), _robot.Report());
+        }
+
+        [Fact]
+        public void CannotPlaceIntoBlockedSquare()
+        {
+            Assert.Equal(PlacementValidity.Valid, _robot.Place(1, 2, Direction.East));
+            Assert.Equal(PlacementValidity.Valid, _robot.Block(3, 2));
+            Assert.Equal(PlacementValidity.Blocked, _robot.Place(3, 2, Direction.West));
+            Assert.Equal((true, 1, 2, Direction.East), _robot.Report());
         }
     }
 }
